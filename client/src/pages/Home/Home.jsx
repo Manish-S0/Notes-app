@@ -1,9 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Navbar from "../../components/Navbar"
 import NoteCard from "../../components/Cards/NoteCard"
 import { MdAdd } from "react-icons/md"
 import AddEditNotes from "./AddEditNotes"
 import Modal from "react-modal"
+import { axiosInstance } from "../../utils/axiosInstance"
+import { useNavigate } from "react-router-dom"
+
+
 
 const Home = () => {
   const [showEditModal, setShowEditModal] = useState({isShown:false,
@@ -12,9 +16,47 @@ const Home = () => {
 
   })
 
+  // const [auth, setAuth] = useState({
+  //   token: localStorage.getItem("token"),
+  //   isAuthenticated: null,
+  //   user: null,
+  // })
+  const[user,setUser]=useState(null)
+  const navigate=useNavigate()
+  const [loading, setLoading] = useState(true);
+  
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axiosInstance.get('/api/users/me', {
+          headers: { 'x-auth-token': localStorage.getItem('token') },
+        });
+        setUser(res.data);
+      } catch (err) {
+        if (err.res && err.res.data && err.res.data.message) {
+          console.log(err.res.data.message);
+          navigate('/login');
+        } else {
+          console.log('Something went wrong');
+        }
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+    
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
-      <Navbar/>
+      <Navbar user={user}/>
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-6">
           <NoteCard title='Note 1'  
@@ -35,7 +77,7 @@ const Home = () => {
         
       </button>
 
-      <Modal 
+      <Modal ariaHideApp={false}
         isOpen={showEditModal.isShown}
         onClose={() => setShowEditModal({isShown:false})}
         type={showEditModal.type}
