@@ -15,9 +15,10 @@ const Home = () => {
     data:null,
 
   })
-  
+
 //user api integraiton
   const[user,setUser]=useState(null)
+  const [notes, setNotes] = useState([]);
   const navigate=useNavigate()
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +43,22 @@ const Home = () => {
       }
     };
 
+    const fetchNotes = async () => {
+      try {
+        const res = await axiosInstance.get('/api/notes', {
+          headers: { 'x-auth-token': localStorage.getItem('token') },
+        });
+        setNotes(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+
     fetchUser();
+    fetchNotes();
   }, []);
 
     
@@ -54,6 +70,21 @@ const Home = () => {
       <Navbar user={user}/>
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-6">
+          {notes.map((note) => (
+            <NoteCard
+              key={note._id}
+              title={note.title}
+              content={note.content}
+              date={new Date(note.createdAt).toDateString()} 
+              tags={note.tags}
+              isPinned={note.isPinned}
+              onPinNote={() => {}}
+              onDelete={() => {}}
+              onEdit={() => {
+                setShowEditModal({isShown:true, type:'edit', data:note})
+              }}
+            />
+          ))}
           <NoteCard title='Note 1'  
             content='Note 1 content' 
             date={new Date().toDateString()} 

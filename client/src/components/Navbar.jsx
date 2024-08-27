@@ -28,9 +28,9 @@ const Navbar = ({user}) => {
     onChange={onChange} 
     onClearSearch={() => setSearchQuery("")}/>
 
-    {location.pathname==="/dashboard" &&
+    {/* {location.pathname==="/dashboard" &&
       <ProfileInfo user={user} onLogout={onLogout}/>
-    }
+    } */}
     </div>
   )
 }

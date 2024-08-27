@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 require('dotenv').config();
 
 // Register
-router.post('/register', async (req, res) => {
+router.post('/signup', async (req, res) => {
     const { name, email, password } = req.body;
     try {
 
