@@ -1,9 +1,11 @@
 import { useState } from "react"
 import ProfileInfo from "./Cards/ProfileInfo"
-import { useNavigate } from "react-router-dom"
+import { useNavigate,useLocation } from "react-router-dom"
 import Search from "./SearchBox/Search"
 
 const Navbar = ({user}) => {
+
+  const location = useLocation()
 
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -25,7 +27,10 @@ const Navbar = ({user}) => {
     value={searchQuery} 
     onChange={onChange} 
     onClearSearch={() => setSearchQuery("")}/>
+
+    {location.pathname==="/dashboard" &&
       <ProfileInfo user={user} onLogout={onLogout}/>
+    }
     </div>
   )
 }

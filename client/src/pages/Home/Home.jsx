@@ -15,16 +15,11 @@ const Home = () => {
     data:null,
 
   })
-
-  // const [auth, setAuth] = useState({
-  //   token: localStorage.getItem("token"),
-  //   isAuthenticated: null,
-  //   user: null,
-  // })
+  
+//user api integraiton
   const[user,setUser]=useState(null)
   const navigate=useNavigate()
   const [loading, setLoading] = useState(true);
-  
 
 
   useEffect(() => {
