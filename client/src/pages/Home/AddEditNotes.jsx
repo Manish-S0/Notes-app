@@ -20,7 +20,7 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData,showToastMessage}) => 
         headers: { 'x-auth-token': localStorage.getItem('token') },
       })
       if (res.data ) {
-        showToastMessage('Note Updated Successfully')
+        showToastMessage('Note Updated Successfully','update')
         fetchNotes();
         onClose();
       }
@@ -42,7 +42,7 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData,showToastMessage}) => 
         headers: { 'x-auth-token': localStorage.getItem('token') },
       })
       if (res.data) {
-        showToastMessage('Note Added Successfully')
+        showToastMessage('Note Added Successfully','add')
         fetchNotes();
         onClose();
       }

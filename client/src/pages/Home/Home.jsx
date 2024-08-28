@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import Navbar from "../../components/Navbar"
 import NoteCard from "../../components/Cards/NoteCard"
+import EmptyCard from "../../components/Cards/EmptyCard"
 import { MdAdd } from "react-icons/md"
 import AddEditNotes from "./AddEditNotes"
 import Modal from "react-modal"
 import { axiosInstance } from "../../utils/axiosInstance"
 import { useNavigate } from "react-router-dom"
 import Toast from "../../components/Toast"
+
 
 
 
@@ -84,7 +86,7 @@ const Home = () => {
           headers: { 'x-auth-token': localStorage.getItem('token') },
         });
         if (res.data){
-          showToastMessage('Note Deleted Successfully')
+          showToastMessage('Note Deleted Successfully','delete')
           fetchNotes();
         }
         
@@ -108,6 +110,7 @@ const Home = () => {
     <>
       <Navbar user={user}/>
       <div className="container mx-auto">
+        {notes.length>0 ?(
         <div className="grid grid-cols-3 gap-4 mt-6">
           {notes.map((note) => (
             <NoteCard
@@ -122,7 +125,8 @@ const Home = () => {
             />
           ))}
           
-        </div>
+        </div>)
+        :(<EmptyCard/>)}
       </div>
       <button className="w-15 h-15 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
       onClick={() => {setShowEditModal({isShown:true, type:'add', data:null})}}>
