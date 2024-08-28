@@ -4,13 +4,14 @@ import { axiosInstance } from "../../utils/axiosInstance"
 // import { useNavigate } from "react-router-dom"
 
 
-const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
+const AddEditNotes = ({onClose,fetchNotes, type, noteData,showToastMessage}) => {
   const [title, setTitle] = useState(noteData ? noteData.title : '')
   const [content, setContent] = useState(noteData ? noteData.content : '')
   
 
   const [error, setError] = useState('')
   
+  //update note
   const updateNote=async() => {
     try {
       const res = await axiosInstance.put(`/api/notes/update/${noteData._id}`, {
@@ -19,6 +20,7 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
         headers: { 'x-auth-token': localStorage.getItem('token') },
       })
       if (res.data ) {
+        showToastMessage('Note Updated Successfully')
         fetchNotes();
         onClose();
       }
@@ -31,6 +33,7 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
     
   }
 
+// add note 
   const addNewNote=async() => {
     try {
       const res = await axiosInstance.post('/api/notes/create', {
@@ -39,6 +42,7 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
         headers: { 'x-auth-token': localStorage.getItem('token') },
       })
       if (res.data) {
+        showToastMessage('Note Added Successfully')
         fetchNotes();
         onClose();
       }

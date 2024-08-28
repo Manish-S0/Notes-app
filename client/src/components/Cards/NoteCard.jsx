@@ -13,7 +13,7 @@ const NoteCard = ({
           <span className='text-xs text-slate-500'>{date}</span>
         </div>
 
-        <MdOutlinePushPin className={`icon-btn ${isPinned ? "text-primary" : "text-slate-300"}`} onClick={onPinNote}/>
+        <MdOutlinePushPin className={`icon-btn ${isPinned ? "text-primary" : "text-slate-300"} hover:text-primary cursor-pointer`} onClick={onPinNote}/>
       </div>
 
       <p className='text-xs text-slate-500 mt-2'>{content}</p>
@@ -21,21 +21,11 @@ const NoteCard = ({
 
         <div className="text-xs text-slate-500">{tags}</div>
         <div className='flex gap-2 flex-wrap'>
-          <MdCreate className='text-slate-500' onClick={onEdit}/>
-          <MdDelete className='text-slate-500' onClick={onDelete}/>
+          <MdCreate className='text-slate-500 hover:text-primary cursor-pointer' onClick={onEdit}/>
+          <MdDelete className='text-slate-500 hover:text-red-500 cursor-pointer' onClick={onDelete}/>
         </div>
       </div>
 
-      {/* <div className='flex gap-1 flex-wrap'>
-        {tags.map((tag, index) => (
-          <span
-            key={index} 
-            className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full"
-          >
-            {tag} 
-          </span>
-        ))}
-      </div> */}
     </div>
   )
 }

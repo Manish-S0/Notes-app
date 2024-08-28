@@ -6,6 +6,7 @@ import AddEditNotes from "./AddEditNotes"
 import Modal from "react-modal"
 import { axiosInstance } from "../../utils/axiosInstance"
 import { useNavigate } from "react-router-dom"
+import Toast from "../../components/Toast"
 
 
 
@@ -21,6 +22,16 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const navigate=useNavigate()
   const [loading, setLoading] = useState(true);
+
+  const [showToastMsg, setShowToastMsg] = useState({isShown:false, msg:'',type:''})
+
+  const showToastMessage=(msg,type)=>{
+    setShowToastMsg({
+      isShown:true,
+      msg,
+      type
+    })
+  }
 
 
   const handleEdit=(noteDetails)=>{
@@ -66,6 +77,24 @@ const Home = () => {
       }
     };
 
+// delete note
+    const handleDelete = async (id) => {
+      try {
+        const res = await axiosInstance.delete(`/api/notes/delete/${id}`, {
+          headers: { 'x-auth-token': localStorage.getItem('token') },
+        });
+        if (res.data){
+          showToastMessage('Note Deleted Successfully')
+          fetchNotes();
+        }
+        
+      } catch (err) {
+        if (err.res && err.res.data && err.res.data.message) {
+          console.log(err.res.data.message);
+        }
+      }
+    };
+
     useEffect(() => {
       fetchUser();
       fetchNotes();
@@ -88,7 +117,7 @@ const Home = () => {
               date={new Date(note.createdAt).toDateString()} 
               isPinned={note.isPinned}
               onPinNote={() => {}}
-              onDelete={() => {}}
+              onDelete={() => handleDelete(note._id)}
               onEdit={() => handleEdit(note)}
             />
           ))}
@@ -116,9 +145,16 @@ const Home = () => {
         <AddEditNotes onClose={() => setShowEditModal({isShown:false, type:'add', data:null})} 
         type={showEditModal.type} 
         noteData={showEditModal.data}
-        fetchNotes={fetchNotes}/>
+        fetchNotes={fetchNotes}
+        showToastMessage={showToastMessage}
+        />
       </Modal>
 
+      <Toast 
+        isShown={showToastMsg.isShown}
+        msg={showToastMsg.msg} type={showToastMsg.type}
+        onClose={() => setShowToastMsg({isShown:false, msg:'',type:''})}
+      />
       
     </>
   )
