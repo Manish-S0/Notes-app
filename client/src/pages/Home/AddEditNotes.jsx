@@ -12,6 +12,22 @@ const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
   const [error, setError] = useState('')
   
   const updateNote=async() => {
+    try {
+      const res = await axiosInstance.put(`/api/notes/update/${noteData._id}`, {
+        title, content,
+      }, {
+        headers: { 'x-auth-token': localStorage.getItem('token') },
+      })
+      if (res.data ) {
+        fetchNotes();
+        onClose();
+      }
+    } 
+    catch (error) {
+      if (error.res && error.res.data && error.res.data.message) {
+        setError(error.res.data.message);
+      } 
+    }
     
   }
 
