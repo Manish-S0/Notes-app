@@ -23,7 +23,16 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
+  const handleEdit=(noteDetails)=>{
+    setShowEditModal({
+      isShown:true,
+      type:'edit',
+      data:noteDetails 
+    })
+
+  }
+
+ 
     const fetchUser = async () => {
       try {
         const res = await axiosInstance.get('/api/users/me', {
@@ -57,9 +66,10 @@ const Home = () => {
       }
     };
 
-    fetchUser();
-    fetchNotes();
-  }, []);
+    useEffect(() => {
+      fetchUser();
+      fetchNotes();
+    }, []);
 
     
   if (loading) {
@@ -76,24 +86,13 @@ const Home = () => {
               title={note.title}
               content={note.content}
               date={new Date(note.createdAt).toDateString()} 
-              tags={note.tags}
               isPinned={note.isPinned}
               onPinNote={() => {}}
               onDelete={() => {}}
-              onEdit={() => {
-                setShowEditModal({isShown:true, type:'edit', data:note})
-              }}
+              onEdit={() => handleEdit(note)}
             />
           ))}
-          <NoteCard title='Note 1'  
-            content='Note 1 content' 
-            date={new Date().toDateString()} 
-            tags={['first1', 'tag2']}
-            isPinned={true}
-            onPinNote={() => {}}
-            onDelete={() => {}}
-            onEdit={() => {}} 
-          />
+          
         </div>
       </div>
       <button className="w-15 h-15 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
@@ -116,7 +115,8 @@ const Home = () => {
       >
         <AddEditNotes onClose={() => setShowEditModal({isShown:false, type:'add', data:null})} 
         type={showEditModal.type} 
-        data={showEditModal.data}/>
+        noteData={showEditModal.data}
+        fetchNotes={fetchNotes}/>
       </Modal>
 
       

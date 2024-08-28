@@ -1,36 +1,54 @@
 import { MdClose } from "react-icons/md"
 import { useState } from "react"
+import { axiosInstance } from "../../utils/axiosInstance"
+// import { useNavigate } from "react-router-dom"
 
 
-const AddEditNotes = ({onClose, type, data}) => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [tags, setTags] = useState([])
+const AddEditNotes = ({onClose,fetchNotes, type, noteData}) => {
+  const [title, setTitle] = useState(noteData ? noteData.title : '')
+  const [content, setContent] = useState(noteData ? noteData.content : '')
+  
 
   const [error, setError] = useState('')
-  const addNewNote=async() => {}
-  const updateNote=async() => {}
+  
+  const updateNote=async() => {
+    
+  }
+
+  const addNewNote=async() => {
+    try {
+      const res = await axiosInstance.post('/api/notes/create', {
+        title, content,
+      }, {
+        headers: { 'x-auth-token': localStorage.getItem('token') },
+      })
+      if (res.data) {
+        fetchNotes();
+        onClose();
+      }
+    } 
+    catch (error) {
+      if (error.res && error.res.data && error.res.data.message) {
+        setError(error.res.data.message);
+      } 
+
+    }
+  }
+
 
   const handleAddNote = () => {
-
     if(!title){
-      setError({
-        ...error,
-        title: 'Title is required'
-      })
+      setError('Title is required')
       return
     }
-
     if(!content){
-      setError({
-        ...error,
-        content: 'Content is required'
-      })
+      setError('Content is required')
       return
     }
-    setError({})
+    setError('')
+
     if(type === 'add'){
-      addNewNote()
+      addNewNote();
     }
 
     if(type === 'edit'){
@@ -48,6 +66,8 @@ const AddEditNotes = ({onClose, type, data}) => {
         <input type="text" 
           className='text-2xl text-slate-800 outline-none'
           placeholder="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
       </div>
@@ -56,17 +76,17 @@ const AddEditNotes = ({onClose, type, data}) => {
         <textarea type="text" 
           className='text-xs text-slate-800 outline-none bg-slate-50 p-2 rounded'
           placeholder="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           rows={10}/>
       </div>
 
-      <div className="mt-4">
-        <label htmlFor="tags" className="input-label">TAGS</label>
-      </div>
+      
 
       {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
 
-      <button className="w-full btn-primary font-medium mt-3 p-3" onClick={() => {handleAddNote()}}>
-      Add
+      <button className="w-full btn-primary font-medium mt-3 p-3" onClick={handleAddNote}>
+      {type === 'edit' ? 'Save Changes' : 'Add'}
       </button>
     </div>
   )
