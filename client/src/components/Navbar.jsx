@@ -36,9 +36,9 @@ const Navbar = ({user,SearchNote,handleClearSearch}) => {
     handleSearch={handleSearch}
     onClearSearch={onClearSearch}/>
 
-    {/* {location.pathname==="/dashboard" &&
+    {location.pathname==="/dashboard" &&
       <ProfileInfo user={user} onLogout={onLogout}/>
-    } */}
+    }
     </div>
   )
 }
