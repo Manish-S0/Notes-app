@@ -110,5 +110,24 @@ router.put('/pin/:id', auth, async (req, res) => {
     }
 });
 
+//search notes
+router.get('/search', auth, async (req, res) => {
+    const { query } = req.query;
+    if (!query) {
+        return res.status(400).json({ msg: 'Query is required' });
+    }
+    try {    
+        const matchingNotes = await Note.find({ user: req.user.id,
+            $or: [
+                { title: { $regex: new RegExp(query, 'i' )} },
+            { content: { $regex: new RegExp(query,'i' )} }
+        ] });
+        return res.json({ success: true, notes: matchingNotes,message: 'Notes found' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 
 module.exports = router;

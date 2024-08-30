@@ -12,7 +12,7 @@ const Search = ({value,onChange,handleSearch,onClearSearch}) => {
 
       {value && <IoMdClose size={20} onClick={onClearSearch} className='text-slate-400 cursor-pointer hover:text-black mr-3' />}
 
-      <FaMagnifyingGlass size={20} className='text-slate-400 cursor-pointer hover:text-black' />
+      <FaMagnifyingGlass size={20}  onClick={handleSearch} className='text-slate-400 cursor-pointer hover:text-black' />
 
       
     </div>

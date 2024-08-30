@@ -27,6 +27,8 @@ const Home = () => {
 
   const [showToastMsg, setShowToastMsg] = useState({isShown:false, msg:'',type:''})
 
+  const [isSearch,setIsSeaarch]=useState(false)
+
   const showToastMessage=(msg,type)=>{
     setShowToastMsg({
       isShown:true,
@@ -34,6 +36,7 @@ const Home = () => {
       type
     })
   }
+
 
 
   const handleEdit=(noteDetails)=>{
@@ -45,7 +48,7 @@ const Home = () => {
 
   }
 
- 
+//user api integraiton
     const fetchUser = async () => {
       try {
         const res = await axiosInstance.get('/api/users/me', {
@@ -65,6 +68,7 @@ const Home = () => {
       }
     };
 
+//get all notes
     const fetchNotes = async () => {
       try {
         const res = await axiosInstance.get('/api/notes', {
@@ -97,6 +101,48 @@ const Home = () => {
       }
     };
 
+
+    const SearchNote=async(query)=>{
+      try{
+        const res=await axiosInstance.get('/api/notes/search', {
+          headers: { 'x-auth-token': localStorage.getItem('token') },
+          params:{query},
+        });
+        if(res.data){
+          setIsSeaarch(true);
+          setNotes(res.data.notes);
+        }
+      }catch(err){
+        console.log(err);
+      } 
+      
+    }
+
+    const updateIsPinned=async(note)=>{
+      const id=note._id;
+      const pinned=note.pinned;
+      try{
+        const res=await axiosInstance.put(`/api/notes/pin/${id}`, 
+          {pinned:!pinned},
+          {
+          headers: { 'x-auth-token': localStorage.getItem('token') }},
+          
+        );
+        if(res.data){
+          showToastMessage('Note Updated Successfully','update')
+          fetchNotes();
+        }
+      }catch(err){
+        console.log('Error:', err.response ? err.response.data : err.message);
+      }
+      
+    }
+
+    const handleClearSearch=()=>{
+      setIsSeaarch(false);
+      fetchNotes();
+    }
+
     useEffect(() => {
       fetchUser();
       fetchNotes();
@@ -108,7 +154,7 @@ const Home = () => {
   }
   return (
     <>
-      <Navbar user={user}/>
+      <Navbar user={user} SearchNote={SearchNote} handleClearSearch={handleClearSearch}/>
       <div className="container mx-auto">
         {notes.length>0 ?(
         <div className="grid grid-cols-3 gap-4 mt-6">
@@ -118,15 +164,15 @@ const Home = () => {
               title={note.title}
               content={note.content}
               date={new Date(note.createdAt).toDateString()} 
-              isPinned={note.isPinned}
-              onPinNote={() => {}}
+              pinned={note.pinned}
+              onPinNote={() => updateIsPinned(note)}
               onDelete={() => handleDelete(note._id)}
               onEdit={() => handleEdit(note)}
             />
           ))}
           
         </div>)
-        :(<EmptyCard/>)}
+        :(<EmptyCard isSearch={isSearch}/>)}
       </div>
       <button className="w-15 h-15 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" 
       onClick={() => {setShowEditModal({isShown:true, type:'add', data:null})}}>

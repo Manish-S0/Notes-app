@@ -3,7 +3,7 @@ import ProfileInfo from "./Cards/ProfileInfo"
 import { useNavigate,useLocation } from "react-router-dom"
 import Search from "./SearchBox/Search"
 
-const Navbar = ({user}) => {
+const Navbar = ({user,SearchNote,handleClearSearch}) => {
 
   const location = useLocation()
 
@@ -16,8 +16,15 @@ const Navbar = ({user}) => {
     Navigate('/login')
   }
 
-  const onChange = (e) => {
-    setSearchQuery(e.target.value)  
+  
+  const handleSearch=()=>{
+    if(searchQuery) {
+      SearchNote(searchQuery)
+    }
+  }
+  const onClearSearch=()=>{
+    setSearchQuery("")
+    handleClearSearch()
   }
 
   return (
@@ -25,8 +32,9 @@ const Navbar = ({user}) => {
     <div className="text-xl font-medium text-black py-2">Notes</div>
     <Search 
     value={searchQuery} 
-    onChange={onChange} 
-    onClearSearch={() => setSearchQuery("")}/>
+    onChange={e => setSearchQuery(e.target.value)} 
+    handleSearch={handleSearch}
+    onClearSearch={onClearSearch}/>
 
     {/* {location.pathname==="/dashboard" &&
       <ProfileInfo user={user} onLogout={onLogout}/>
