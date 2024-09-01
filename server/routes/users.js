@@ -6,6 +6,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 require('dotenv').config();
 
+const {sendVerificationEmail} = require('../mailtrap/email.js');
 // Register
 router.post('/signup', async (req, res) => {
     const { name, email, password } = req.body;
@@ -28,6 +29,8 @@ router.post('/signup', async (req, res) => {
         user.verificationTokenExpires=new Date(Date.now()+360000)
 
         await user.save();
+
+        sendVerificationEmail(user.verificationToken,user.email)
 
         const payload = { user: { id: user.id } };
 
