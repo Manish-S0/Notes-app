@@ -23,6 +23,10 @@ router.post('/signup', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
 
+        const verificationToken=Math.floor(Math.random() * 900000).toString();
+        user.verificationToken=verificationToken
+        user.verificationTokenExpires=new Date(Date.now()+360000)
+
         await user.save();
 
         const payload = { user: { id: user.id } };
@@ -79,6 +83,17 @@ router.get('/me', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// get all users
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        res.json(users);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
