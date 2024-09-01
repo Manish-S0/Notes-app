@@ -8,6 +8,7 @@ import Modal from "react-modal"
 import { axiosInstance } from "../../utils/axiosInstance"
 import { useNavigate } from "react-router-dom"
 import Toast from "../../components/Toast"
+import { Audio } from 'react-loader-spinner'
 
 
 
@@ -150,7 +151,17 @@ const Home = () => {
 
     
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <Audio 
+      height="80"
+      width="80"
+      radius="9"
+      color="green"
+      ariaLabel="three-dots-loading"
+      wrapperStyle
+      wrapperClass
+      />
+  </div>
   }
   return (
     <>

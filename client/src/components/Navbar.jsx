@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {  useState } from "react"
 import ProfileInfo from "./Cards/ProfileInfo"
 import { useNavigate,useLocation } from "react-router-dom"
 import Search from "./SearchBox/Search"
@@ -10,6 +10,8 @@ const Navbar = ({user,SearchNote,handleClearSearch}) => {
   const [searchQuery, setSearchQuery] = useState("")
 
   const Navigate = useNavigate()
+
+  
 
   const onLogout = () => {
     localStorage.removeItem("token")
@@ -29,16 +31,19 @@ const Navbar = ({user,SearchNote,handleClearSearch}) => {
 
   return (
     <div className="bg-white flex items-center justify-between px-4 py-3 drop-shadow">
-    <div className="text-xl font-medium text-black py-2">Notes</div>
-    <Search 
-    value={searchQuery} 
-    onChange={e => setSearchQuery(e.target.value)} 
-    handleSearch={handleSearch}
-    onClearSearch={onClearSearch}/>
+      <div className="text-xl font-medium text-black py-2">Notes</div>
+      <Search 
+      value={searchQuery} 
+      onChange={e => setSearchQuery(e.target.value)} 
+      handleSearch={handleSearch}
+      onClearSearch={onClearSearch}
+      />
 
-    {location.pathname==="/dashboard" &&
-      <ProfileInfo user={user} onLogout={onLogout}/>
-    }
+
+      {location.pathname==="/dashboard" &&
+        <ProfileInfo user={user} onLogout={onLogout}/>
+        
+      }
     </div>
   )
 }
