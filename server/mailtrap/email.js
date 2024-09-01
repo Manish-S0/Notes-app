@@ -25,6 +25,35 @@ const sendVerificationEmail =async (verificationToken, email) => {
   }
 }
 
+const sendWelcomeEmail =async () => {
+  
+  const recipients = [
+    {
+      email: "manishsah27337@gmail.com"
+    }
+  ];  
+
+  try{
+    const response=await mailtrapClient.send({
+      from: sender,
+      to: recipients,
+      
+      template_uuid: "c2267746-de65-4b97-bb2b-d6238bf46029",
+    template_variables: {
+      "company_info_name": "Notes App",
+      "name": "Manish",},
+      
+    });
+    console.log('Email sent successfully',response);
+  }catch(err){
+    console.error(`Error sending welcome email`, err);
+  }
+
+}
+// sendWelcomeEmail()
+
 module.exports = {
-  sendVerificationEmail
+  sendVerificationEmail,
+  sendWelcomeEmail
+
 }

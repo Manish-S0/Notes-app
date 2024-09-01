@@ -7,6 +7,7 @@ const auth = require('../middleware/auth');
 require('dotenv').config();
 
 const {sendVerificationEmail} = require('../mailtrap/email.js');
+const {sendWelcomeEmail} = require('../mailtrap/email.js');
 // Register
 router.post('/signup', async (req, res) => {
     const { name, email, password } = req.body;
@@ -49,6 +50,38 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+
+
+router.post("/verify-email",async (req, res) => {
+    const { code } = req.body;
+	try {
+		const user = await User.findOne({
+			verificationToken: code,
+			verificationTokenExpires: { $gt: Date.now() },
+		});
+
+		if (!user) {
+			return res.status(400).json({ success: false, message: "Invalid or expired verification code" });
+		}
+
+		user.isVerified = true;
+		user.verificationToken = undefined;
+		user.verificationTokenExpires = undefined;
+		await user.save();
+
+		await sendWelcomeEmail(user.email, user.name);
+
+		res.status(200).json({
+			success: true,
+			message: "Email verified successfully",
+			
+		});
+	} catch (error) {
+		console.log("error in verifyEmail ", error);
+		res.status(500).json({ success: false, message: "Server error" });
+	}
+} 
+);
 // Login
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
